@@ -19,7 +19,8 @@ let app = new Vue({
         return name1 > name2 ? 1 : -1;
       });
     },
-    updatedataShow() {
+    updateDataShow() {
+      this.searchText = '';
       this.dataShow = this.dataAll.slice(this.countPerPage * (this.currentPage - 1), this.countPerPage * this.currentPage);
     },
     showDetail(data) {
@@ -41,36 +42,30 @@ let app = new Vue({
   watch: {
     isAsc: function() {
       this.dataAll = this.dataAll.reverse();
-      this.updatedataShow();
+      this.updateDataShow();
     },
     currentPage: function() {
-      this.updatedataShow();
+      this.updateDataShow();
     },
+    searchText: function(text) {
+      console.log('run');
+      if (text == '') {
+        this.updateDataShow();
+        return;
+      }
+      let result = this.searcher.search(this.searchText);
+      this.dataShow = result;
+    }
   },
   created: function() {
     axios.get(`https://restcountries.eu/rest/v2/all`)
       .then(res => {
         this.dataAll = this.sortAsc(res.data);
-        this.updatedataShow();
+        this.updateDataShow();
         
-        this.searcher = new FuzzySearch(people, ['name.firstName', 'state'], {
-          caseSensitive: true,
+        this.searcher = new FuzzySearch(this.dataAll, ['name'], {
+          sort: true,
         });
-        
-        // console.log(res.data);
       });
   }
 });
-
-const people = [{
-  name: {
-    firstName: 'Jesse',
-    lastName: 'Bowen',
-  },
-  state: 'Seattle',
-}];
-const searcher = new FuzzySearch(people, ['name.firstName', 'state'], {
-  caseSensitive: true,
-});
-const result = searcher.search('ess');
-console.log(result);

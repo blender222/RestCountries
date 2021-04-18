@@ -11,11 +11,11 @@
 </head>
 
 <body>
-  <div id="table">
+  <div id="table" v-cloak>
     <div id="setting">
       <button v-if="isAsc" @click="isAsc = false" class="btn btn-primary" type="button" >升序</button>
       <button v-else @click="isAsc = true" class="btn btn-primary" type="button" >降序</button>
-      <input class="form-control" id="search" v-model="searchText" placeholder="搜尋" type="text">
+      <input class="form-control" id="search" v-model="searchText" placeholder="模糊搜尋" type="text">
     </div>
     <div class="thead">
       <div class="field">國旗</div>
